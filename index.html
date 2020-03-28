@@ -51,6 +51,59 @@
     }
   </style>
   <script>
+    // 페이지가 전부 로드되었을 때, 실행하라는 함수.
+    $(document).ready(function () {
+      listing();
+    });
+
+
+    // console.log('화면 로딩 후 잘 실행되었습니다');
+    function listing() {
+      // 1. 기존의 데이터 지우고
+      $('#cards').empty();
+      // 2. ajax 로 데이터 받아오고
+      $.ajax({
+        type: "GET",
+        url: "http://spartacodingclub.shop/post",
+        data: {},
+        success: function (response) {
+          let result = response['articles'];
+          for (let i = 0; i < result.length; i++) {
+            console.log(result[i]);
+
+            let comment = result[i]['comment'];
+            let desc = result[i]['desc'];
+            let image = result[i]['image'];
+            let title = result[i]['title'];
+            let url = result[i]['url'];
+
+            console.log(comment, desc, image, title, url);
+            // 3. 눈에 보여주고
+            let temphtml = make_cards(comment, desc, image, title, url)
+          }
+
+        }
+      })
+    }
+
+    function make_cards(comment, desc, image, title, url) {
+
+      let temphtml = '<div class="card">\
+        <img class="card-img-top" src="'+ image + '"\
+          alt="Card image cap" />\
+        <div class="card-body">\
+          <a href="'+ url + '" class="card-title">' + title + '</a>\
+          <p class="card-text">'+ desc + '</p>\
+          <p class="card-text comment">'+ comment + '</p>\
+        </div>\
+      </div>'
+
+      $('#cards').append(temphtml);
+
+      // or return temphtml 이렇게 쓸 수도 있다.
+    }
+
+
     function openclose() {
       let status = $('#posting-box').css('display');
       if (status == 'none') {
@@ -92,7 +145,7 @@
       </div>
     </div>
 
-    <div class="card-columns">
+    <div class="card-columns" id="cards">
       <div class="card">
         <img class="card-img-top"
           src="https://www.elsetge.cat/myimg/f/140-1405754_hotel-transylvania-2-wallpaper-character-hotel-transylvania-mavis.jpg"
